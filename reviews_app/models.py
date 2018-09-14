@@ -3,7 +3,14 @@ from django.conf import settings
 
 
 class Company(models.Model):
+
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'companies'
 
 
 class Review(models.Model):
@@ -16,3 +23,7 @@ class Review(models.Model):
     summary = models.TextField()
     ip_address = models.CharField(max_length=20)
     submission_date = models.DateField()
+
+    def __str__(self):
+        return self.title
+
