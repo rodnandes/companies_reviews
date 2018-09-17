@@ -123,3 +123,30 @@ class ReviewViewSetTestCase(APITestCase):
 
         response = self.client.delete('/api/reviews/1/')
         self.assertEqual(response.status_code, 204)
+
+
+class UserAuthTestCase(APITestCase):
+
+    def setUp(self):
+        self.user_data = {
+            'username': 'anotheruser',
+            'password': 'p4ssw0rd',
+            'email': 'my@email.com'
+        }
+        self.response = self.client.post('/api/register/', self.user_data)
+
+    def test_can_register_new_user(self):
+        self.assertEqual(self.response.status_code, 201)
+        response_data = json.loads(self.response.content)
+        self.assertEqual(response_data['username'], 'anotheruser')
+
+    def test_generate_token_for_existing_user(self):
+        response = self.client.post(
+            '/api/token-auth/', {
+                'username': self.user_data['username'],
+                'password': self.user_data['password']
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertNotEqual(response_data['token'], '')
