@@ -20,7 +20,7 @@ class Review(models.Model):
     reviewer = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  on_delete=models.CASCADE)
     rating = models.FloatField(
-        validators=[MinValueValidator(0.0), MaxValueValidator(0.5)])
+        validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
     title = models.CharField(max_length=64)
     summary = models.TextField(max_length=10000)
     ip_address = models.GenericIPAddressField()
