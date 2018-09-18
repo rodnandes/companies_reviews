@@ -13,5 +13,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/', include(router.urls)),
     url(r'^api/register/', views.register_auth),
+    url(r'^api/login/', views.login),
     url(r'^api/token-auth/', authtoken_views.obtain_auth_token)
 ]
