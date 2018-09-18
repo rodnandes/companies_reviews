@@ -150,3 +150,15 @@ class UserAuthTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.content)
         self.assertNotEqual(response_data['token'], '')
+
+    def test_existing_user_login(self):
+        response = self.client.post(
+            '/api/login/', {
+                'username': self.user_data['username'],
+                'password': self.user_data['password']
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertNotEqual(response_data['token'], '')
+
