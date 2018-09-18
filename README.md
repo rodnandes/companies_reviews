@@ -56,7 +56,27 @@ You can check the application running on `http://localhost:8000/`.`
 
 ## API Usage
 
-To access the API you will need to get a Token for your User.
+To access the API you will need to get a token for your User.
 
-You can register a new user, and get the Token providing the User's credentials.
+You can register a new user, and get the token providing the User's credentials.
+
+### Registration, Login and Access Token
+
+Before effectively using the API, you will need to register a User and get its access Token.
+
+You can login to the API sending requests via `curl`.
+
+First, register a new User:
+
+```bash
+curl -X POST -d "username=someuser&password=secret123&email=me@email.com" localhost:8000/api/register/
+```
+
+Then login with the created user registration to get the access token:
+
+```bash
+curl -X POST -d "username=someuser&password=secret123" localhost:8000/api/login/
+```
+
+Once you logged the API will send a response with the access token for the User.
 
