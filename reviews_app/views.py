@@ -2,22 +2,25 @@ from rest_framework import viewsets
 from reviews_app.models import Review
 from django.contrib.auth.models import User
 from reviews_app.serializers import ReviewSerializer, UserSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
 
     serializer_class = ReviewSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Review.objects.filter(reviewer=self.request.user.id)
 
 
 @api_view(['POST'])
+@permission_classes((AllowAny,))
 def register_auth(request):
     serialized = UserSerializer(data=request.data)
     if serialized.is_valid():
@@ -32,6 +35,7 @@ def register_auth(request):
 
 
 @api_view(['POST'])
+@permission_classes((AllowAny,))
 def login(request):
     username = request.data.get("username")
     password = request.data.get("password")
