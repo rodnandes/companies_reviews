@@ -84,8 +84,8 @@ class ReviewViewSetTestCase(APITestCase):
 
     def test_post_a_review(self):
         new_review = {
-            'company': 1,
-            'reviewer': 1,
+            'company': self.company.id,
+            'reviewer': self.user.id,
             'rating': 3,
             'title': 'Ok',
             'summary': 'Is good',
@@ -108,8 +108,8 @@ class ReviewViewSetTestCase(APITestCase):
 
     def test_edit_review(self):
         update_data = {
-            'company': 1,
-            'reviewer': 1,
+            'company': self.company.id,
+            'reviewer': self.user.id,
             'rating': 3,
             'title': 'updated review',
             'summary': 'Is good',
