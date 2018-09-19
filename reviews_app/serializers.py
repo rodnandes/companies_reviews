@@ -17,6 +17,13 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CompanySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Company
+        fields = '__all__'
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:

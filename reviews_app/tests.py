@@ -2,7 +2,6 @@ from django.test import TestCase
 from rest_framework.test import APITestCase
 from reviews_app.models import Company, Review
 from django.contrib.auth.models import User
-from django.urls import reverse
 import json
 from rest_framework.test import APIClient
 
@@ -10,8 +9,8 @@ from rest_framework.test import APIClient
 class CompanyModelTest(TestCase):
 
     def setUp(self):
-        Company.objects.create(name="Some Company")
-        Company.objects.create(name="Another Company")
+        Company.objects.create(name="Some Company", slug="some_company")
+        Company.objects.create(name="Another Company", slug="another_company")
 
     def test_company_objects_creation(self):
         companies = Company.objects.all()
@@ -31,7 +30,8 @@ class ReviewModelTestCase(TestCase):
 
     def setUp(self):
         review = {}
-        review['company'] = Company.objects.create(name="Some Company")
+        review['company'] = Company.objects.create(
+            name="Some Company", slug="some_company")
         review['reviewer'] = User.objects.create(username="me")
         review['rating'] = 4
         review['title'] = "My review"
@@ -71,7 +71,8 @@ class ReviewViewSetTestCase(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        self.company = Company.objects.create(name="Some Company")
+        self.company = Company.objects.create(name="Some Company",
+                                              slug="some_company")
         self.review = Review.objects.create(
             company=self.company,
             reviewer=self.user,
@@ -117,11 +118,61 @@ class ReviewViewSetTestCase(APITestCase):
             'submission_date': '2018-09-14'
         }
         response = self.client.put('/api/reviews/1/', update_data)
+        content = json.loads(response.content)
+        self.assertEqual(content['title'], 'updated review')
         self.assertEqual(response.status_code, 200)
 
     def test_delete_review(self):
 
         response = self.client.delete('/api/reviews/1/')
+        self.assertEqual(response.status_code, 204)
+
+
+class CompanyViewSetTestCase(APITestCase):
+
+    def setUp(self):
+
+        self.user = User.objects.create(username="me")
+
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.companies_data = [
+            {'name': 'A Company', 'slug': 'a_company'},
+            {'name': 'Other Company', 'slug': 'other_company'},
+            {'name': 'Another Company', 'slug': 'another_company'},
+        ]
+
+        Company.objects.create(**self.companies_data[0])
+        Company.objects.create(**self.companies_data[1])
+        Company.objects.create(**self.companies_data[2])
+
+    def test_post_a_company(self):
+        new_company = {'name': 'New Company', 'slug': 'new_company'}
+        response = self.client.post('/api/companies/',
+                                    new_company, format='json')
+        self.assertEqual(201, response.status_code)
+
+    def test_get_a_company(self):
+        response = self.client.get('/api/companies/1/')
+        self.assertEqual(200, response.status_code)
+
+    def test_get_all_companies(self):
+        response = self.client.get('/api/companies/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json.loads(response.content)), 3)
+
+    def test_edit_a_company(self):
+        update_data = {'name': 'Updated', 'slug': 'updated'}
+        response = self.client.put('/api/companies/1/', update_data)
+        content = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(content['name'], 'Updated')
+        self.assertEqual(content['slug'], 'updated')
+
+    def test_delete_a_company(self):
+
+        response = self.client.delete('/api/companies/1/')
         self.assertEqual(response.status_code, 204)
 
 
@@ -161,4 +212,3 @@ class UserAuthTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.content)
         self.assertNotEqual(response_data['token'], '')
-

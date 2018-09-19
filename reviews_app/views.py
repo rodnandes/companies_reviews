@@ -1,7 +1,8 @@
 from rest_framework import viewsets
-from reviews_app.models import Review
+from reviews_app.models import Review, Company
 from django.contrib.auth.models import User
-from reviews_app.serializers import ReviewSerializer, UserSerializer
+from reviews_app.serializers import ReviewSerializer, UserSerializer, \
+    CompanySerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.response import Response
@@ -17,6 +18,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Review.objects.filter(reviewer=self.request.user.id)
+
+
+class CompanyViewSet(viewsets.ModelViewSet):
+
+    serializer_class = CompanySerializer
+    queryset = Company.objects.all()
 
 
 @api_view(['POST'])

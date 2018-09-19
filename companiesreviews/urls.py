@@ -8,6 +8,7 @@ from rest_framework.authtoken import views as authtoken_views
 
 router = DefaultRouter()
 router.register(r'reviews', views.ReviewViewSet, base_name='Review')
+router.register(r'companies', views.CompanyViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

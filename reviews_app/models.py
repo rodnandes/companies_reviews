@@ -6,6 +6,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Company(models.Model):
 
     name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
+    detail = models.TextField(max_length=255, blank=True)
 
     def __str__(self):
         return self.name
@@ -22,7 +24,7 @@ class Review(models.Model):
     rating = models.FloatField(
         validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
     title = models.CharField(max_length=64)
-    summary = models.TextField(max_length=10000)
+    summary = models.TextField(max_length=10000, blank=True)
     ip_address = models.GenericIPAddressField()
     submission_date = models.DateField(auto_now_add=True)
 
